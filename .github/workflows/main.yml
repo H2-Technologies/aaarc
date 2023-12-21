@@ -1,0 +1,15 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches: 'master'
+  workflow_dispatch:
+    
+jobs:
+  build_api:
+    runs-on: self-hosted
+    steps:
+      - name: Setup
+        uses: actions/checkout@v4
+      - name: Deploy
+        run: docker compose up --build -d

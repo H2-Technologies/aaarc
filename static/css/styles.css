@@ -1,0 +1,27 @@
+/* Style the h1 header */
+h1 {
+  color: #d55a08;
+  text-align: center;
+}
+
+.image-container {
+  position: relative;
+  display: inline-block;
+}
+
+.image-container img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.overlay-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  padding: 10px 20px;
+  font-size: 275%;
+  text-align: center;
+}
