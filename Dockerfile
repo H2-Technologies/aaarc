@@ -12,7 +12,7 @@ WORKDIR /usr/src/app
 
 COPY . .
 
-RUN apk add libc6-dev
+RUN apk add --no-cache musl-dev
 
 # Download dependencies as a separate step to take advantage of Docker's caching.
 # Leverage a cache mount to /root/.yarn to speed up subsequent builds.
