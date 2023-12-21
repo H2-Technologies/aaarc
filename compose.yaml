@@ -1,0 +1,7 @@
+services:
+  server:
+    build:
+      context: .
+    ports:
+      - 4550:4550
+    restart: unless-stopped
