@@ -8,7 +8,7 @@ on:
 
 jobs:
   build_api:
-    runs-on: self-hosted
+    runs-on: gitlab
     steps:
       - name: Setup
         uses: actions/checkout@v4
