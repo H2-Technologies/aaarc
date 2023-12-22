@@ -3,7 +3,7 @@
 # Comments are provided throughout this file to help you get started.
 # If you need more help, visit the Dockerfile reference guide at
 # https://docs.docker.com/engine/reference/builder/
-FROM rust:latest
+FROM rust:1.74.1-slim
 
 WORKDIR /usr/src/app
 
@@ -18,5 +18,9 @@ RUN cargo fetch
 # Build the application.
 RUN cargo build --release
 
+RUN cp ./target/release/ashland-area-amateur-radio-club /usr/local/bin/.
+
+RUN cargo clean
+
 # Run the application.
-CMD ["./target/release/ashland-area-amateur-radio-club"]
+CMD ["ashland-area-amateur-radio-club"]
