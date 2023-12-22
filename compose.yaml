@@ -1,5 +1,6 @@
 services:
   server:
+    container_name: aaarc-rocket-server
     build:
       context: .
     ports:
