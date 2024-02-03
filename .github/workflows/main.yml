@@ -7,10 +7,35 @@ on:
   workflow_dispatch:
 
 jobs:
-  build_api:
-    runs-on: gitlab
+  install_rust:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Rust
+        uses: ubuntu@latest
+      - name: Install Rust
+        run: |
+          sudo apt update
+          sudo apt install -y curl
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          source $HOME/.cargo/env
+
+  #install_rust_dependencies:
+  #  needs: install_rust
+  #  runs-on: ubuntu-latest
+  #  # allow the
+
+
+  build_docker_image:
+    runs-on: ubuntu-latest
     steps:
       - name: Setup
         uses: actions/checkout@v4
-      - name: Deploy
-        run: docker compose up --build -d
+      - name: Build Image
+        run: |
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/aaarc .
+      - name: Login to Docker Hub
+        run: |
+          docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_TOKEN }}
+      - name: Push Image
+        run: |
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/aaarc
