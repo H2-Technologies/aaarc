@@ -5,25 +5,39 @@ h1 {
 }
 
 .image-container {
-  position: relative;
-  display: inline-block;
-  max-width: 100%;
-  max-height: 100vh;
-  overflow: auto;
+  height: 500px;
+  vertical-align: bottom;
+  background-image: url('/images/coveredBridge.jpg');
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-size: 100%;
+  background-color: transparent;
+  background-size: cover;
+}
+
+.wsite-content-title {
+  /* Center the text left to right on the picture, and make the vertical center in the picture */
+  position: absolute;
+  top: 250px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  padding: 10px 20px;
+  font-size: 275%;
+  text-align: center;
+
+  /* Make the text have a black background with a little bit of transparency */
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 /* Make the coveredBridge image so that it cannot be larger than the with of the screen it's on, and it adjusts it height based on the width that it has. */
 #coveredBridge {
-  width: 100%;
-  height: auto;
-  /* This works better but now make it so that it trims the top and bottom of the picture in equal incriments until it is only displayed within the size of the screen */
+  /*width: 100%;
+  height: auto;*/
   object-fit: cover;
-  /* This makes it so that the image is centered in the container */
   object-position: center;
-  /* This makes it so that the image is not stretched */
   max-width: 100%;
   max-height: 99vh;
-  overflow: auto;
 }
 
 .overlay-text {
@@ -40,4 +54,55 @@ h1 {
 /* Make the background of the whole page black */
 body {
   background-color: #000;
+}
+
+/* Make the text white */
+p {
+  color: #fff;
+}
+
+.header {
+  color: #fff;
+  padding: 10px 20px;
+  text-align: center;
+}
+
+.container {
+  /* Remove the left 65% of the space from being used */
+  margin-left: 70%;
+}
+
+.navbar {
+  /* Make the navbar a flexbox, and make the items in the navbar have a space between them */
+  display: flex;
+  padding: 10px 20px;
+  height: 88px;
+  /* align the last item to the right side, 20px from the side and then the other button's will align themselves */
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-button {
+  /* For every li in the navbar, create a padding of 20px to the right and center it top to bottom in the 88px tall header*/
+  padding: 20px 0;
+  text-align: center;
+  height: 50%;
+  display: flex;
+  align-items: center;
+  /* set the background of the button to 0% opacity */
+  background-color: rgba(0, 0, 0, 0);
+  /* set the color of the text to white */
+  color: #fff;
+  border-color: #fff;
+}
+
+.nav-button:hover {
+  /* When the button is hovered over, make the background 100% opacity */
+  background-color: rgba(0, 0, 0, 1);
+}
+
+.link {
+  /* Remove the underline from the link */
+  text-decoration: none;
+  padding: 10px 20px;
 }

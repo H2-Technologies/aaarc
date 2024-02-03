@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install Rust
-        uses: ubuntu@latest
+        uses: ubuntu:latest
       - name: Install Rust
         run: |
           sudo apt update
