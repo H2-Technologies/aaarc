@@ -8,3 +8,15 @@ port = 8000
 
 [release]
 ip_header = false
+
+[default.oauth.github]
+provider = "GitHub"
+client_id = "2e907d35d030dedc2aa5"
+client_secret = "a2b33308d0257b1bc4b71101dffe2fad179418b8"
+redirect_uri = "http://127.0.0.1:8000/auth/github"
+
+[default.oauth.google]
+provider = "Google"
+client_id = "20344930896-ftjeoo58p4fg0ig511pa2aniobgcovc2.apps.googleusercontent.com"
+client_secret = "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"
+redirect_uri = "http://127.0.0.1:8000/auth/"

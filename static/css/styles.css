@@ -70,6 +70,7 @@ p {
 .container {
   /* Remove the left 65% of the space from being used */
   margin-left: 70%;
+  /*padding-top: 88px;*/
 }
 
 .navbar {
@@ -79,7 +80,7 @@ p {
   height: 88px;
   /* align the last item to the right side, 20px from the side and then the other button's will align themselves */
   justify-content: space-between;
-  align-items: center;
+  align-items: right;
 }
 
 .nav-button {
