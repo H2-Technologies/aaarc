@@ -8,6 +8,7 @@ port = 8000
 
 [release]
 ip_header = false
+secret = "Bwq8d8D8+Z7vnNqA5dOvws4ik35eGrg4U1IFRv278jM="
 
 [default.oauth.github]
 provider = "GitHub"
