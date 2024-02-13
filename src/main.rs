@@ -82,7 +82,7 @@ fn github(oauth2: OAuth2<GitHub>, cookies: &CookieJar<'_>) -> Redirect {
 
 #[get("/login/google")]
 fn google(oauth2: OAuth2<Google>, cookies: &CookieJar<'_>) -> Redirect {
-    oauth2.get_redirect(cookies, &["userinfo.email", "userinfo.profile"]).unwrap()
+    oauth2.get_redirect(cookies, &["email", "profile"]).unwrap()
 }
 
 #[get("/github")]
