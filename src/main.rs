@@ -65,12 +65,12 @@ async fn auth_main() -> Result<NamedFile, std::io::Error> {
 
 #[get("/auth.js")]
 async fn auth_js() -> Result<NamedFile, std::io::Error> {
-    NamedFile::open("static/auth.js").await
+    NamedFile::open("static/js/auth.js").await
 }
 
 #[get("/auth.css")]
 async fn auth_css() -> Result<NamedFile, std::io::Error> {
-    NamedFile::open("static/auth.css").await
+    NamedFile::open("static/css/auth.css").await
 }
 
 #[get("/login/github")]
