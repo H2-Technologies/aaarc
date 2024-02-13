@@ -1,7 +1,5 @@
 #[macro_use]
 extern crate rocket;
-use reqwest::header::{ACCEPT, AUTHORIZATION};
-use reqwest::Response;
 use rocket::http::Status;
 use rocket::http::{Cookie, SameSite};
 use rocket::{fs::NamedFile, http::CookieJar, response::Redirect};
@@ -20,7 +18,7 @@ struct Google;
 
 #[get("/")]
 async fn index() -> Option<NamedFile> {
-    NamedFile::open("static/index.html").await.ok()
+    NamedFile::open("static/index.html").await.ok()     
 }
 
 #[get("/styles.css")]
@@ -110,9 +108,7 @@ async fn google_callback(token: TokenResponse<Google>, cookies: &CookieJar<'_>) 
 
 #[rocket::main]
 async fn main() {
-    let mut allowedEmails: Vec<String> = Vec::new();
-    let allowedEmails = add_allowed_emails(&mut allowedEmails).unwrap();
-    todo!("Add a check for the email in the allowed emails list");
+    let mut allowedEmails: Vec<String> = vec!["admin@austinh.dev".to_string(), "ahadley1124@gmail.com".to_string(), "kd8otq@gmail.com".to_string()];
 
     let _ = rocket::build()
         .mount("/", routes![index, favicon, events])
@@ -162,23 +158,5 @@ async fn get_email(token: &str) -> Result<String, Status> {
             }
         }
         Err(_) => return Err(Status::InternalServerError),
-    }
-}
-
-fn add_allowed_emails(allowedEmails: &mut Vec<String>) -> Result<&Vec<String>, String> {
-    let cur_dir = std::env::current_dir().expect("Failed to get current directory");
-    let full_path = cur_dir.join("allowed_emails.txt");
-    let file = std::fs::read_to_string(full_path);
-    match file {
-        Ok(f) => {
-            let file_contents = std::fs::read(f).expect("Failed to read the contents of the file");
-            let contents: String = String::from_utf8(file_contents).expect("Failed to convert file contents to string");
-            let emails: Vec<String> = contents.split("\n").map(|s| s.to_string()).collect();
-            for email in emails {
-                allowedEmails.push(email);
-            }
-            return Ok(allowedEmails);
-        }
-        Err(_) => return Err("Error reading file".to_string()),
     }
 }
