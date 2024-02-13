@@ -110,6 +110,10 @@ async fn google_callback(token: TokenResponse<Google>, cookies: &CookieJar<'_>) 
 
 #[rocket::main]
 async fn main() {
+    let mut allowedEmails: Vec<String> = Vec::new();
+    let allowedEmails = add_allowed_emails(&mut allowedEmails).unwrap();
+    todo!("Add a check for the email in the allowed emails list");
+
     let _ = rocket::build()
         .mount("/", routes![index, favicon, events])
         .mount("/css/", routes![styles, events_css])
@@ -158,5 +162,23 @@ async fn get_email(token: &str) -> Result<String, Status> {
             }
         }
         Err(_) => return Err(Status::InternalServerError),
+    }
+}
+
+fn add_allowed_emails(allowedEmails: &mut Vec<String>) -> Result<&Vec<String>, String> {
+    let cur_dir = std::env::current_dir().expect("Failed to get current directory");
+    let full_path = cur_dir.join("allowed_emails.txt");
+    let file = std::fs::read_to_string(full_path);
+    match file {
+        Ok(f) => {
+            let file_contents = std::fs::read(f).expect("Failed to read the contents of the file");
+            let contents: String = String::from_utf8(file_contents).expect("Failed to convert file contents to string");
+            let emails: Vec<String> = contents.split("\n").map(|s| s.to_string()).collect();
+            for email in emails {
+                allowedEmails.push(email);
+            }
+            return Ok(allowedEmails);
+        }
+        Err(_) => return Err("Error reading file".to_string()),
     }
 }
