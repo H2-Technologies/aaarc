@@ -18,7 +18,7 @@ struct Google;
 
 #[get("/")]
 async fn index() -> Option<NamedFile> {
-    NamedFile::open("static/index.html").await.ok()     
+    NamedFile::open("static/index.html").await.ok()
 }
 
 #[get("/styles.css")]
@@ -112,15 +112,13 @@ async fn main() {
 
     let _ = rocket::build()
         .mount("/", routes![index, favicon, events])
-        .mount("/css/", routes![styles, events_css])
-        .mount("/js/", routes![main_js, navbar_js])
+        .mount("/css/", routes![styles, events_css, auth_css])
+        .mount("/js/", routes![main_js, navbar_js, auth_js])
         .mount("/images", routes![covered_bridge])
         .mount(
             "/auth",
             routes![
                 auth_main,
-                auth_js,
-                auth_css,
                 github,
                 google,
                 github_callback,
