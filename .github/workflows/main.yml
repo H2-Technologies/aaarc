@@ -15,6 +15,8 @@ jobs:
         with:
           toolchain: stable
           override: true
+      - name: Update Repositories
+        run: sudo apt-get update
       - name: Install Cargo
         run: sudo apt-get install cargo
 

@@ -15,6 +15,8 @@ COPY . .
 # into this layer.
 RUN cargo fetch
 
+RUN apt-get install pkg-config
+
 # Build the application.
 RUN cargo build --release
 
