@@ -17,7 +17,7 @@ RUN cargo fetch
 
 RUN apt-get update
 
-RUN apt-get install pkg-config
+RUN apt-get install pkg-config -y
 
 # Build the application.
 RUN cargo build --release
