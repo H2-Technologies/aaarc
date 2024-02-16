@@ -1,0 +1,18 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Contact: mailto:admin@austinh.dev
+Expires: 2025-02-16T05:00:00.000Z
+Encryption: https://aaarc.austinh.dev/pgp-key.txt
+Acknowledgments: https://aaarc.austinh.dev/hall-of-fame.html
+Preferred-Languages: en
+Canonical: httpd://aaarc.austinh.dev/.well-known/security.txt
+Canonical: httpd://aaarc.austinh.dev/security.txt
+-----BEGIN PGP SIGNATURE-----
+
+iLkEARMKAB0WIQRDhibJKpGQomnLohwuavkUtxpHVQUCZc9bYAAKCRAuavkUtxpH
+VfXZAgkB6y6RROgA+ZphV888YPcN5No7RIFokZQ7nh3m4479IJ3NPC3wXiVwwymP
+sWk/YVWX3MHWxusfcbOzihrqMMSsBioCCQGbLJIxNSu8H89+2ZbPWH5OlFs9FuIN
+MprZ99/yN3A1J0TTd/bEerBzpC/rxL0PWbS4QpUJO23yWfAkOfqi7Q2H6A==
+=uAoi
+-----END PGP SIGNATURE-----

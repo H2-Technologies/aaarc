@@ -1,0 +1,14 @@
+User-agent: Teoma
+Disallow: /
+User-agent: Gigabot
+Disallow: /
+User-agent: Nutch
+Disallow: /
+User-agent: psbot
+Disallow: /
+User-agent: *
+Disallow: 
+Crawl-delay: 5
+Disallow: /cgi-bin/
+Disallow: /admin/
+Sitemap: https://aaarc.austinh.dev/sitemap.xml

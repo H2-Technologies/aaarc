@@ -106,15 +106,36 @@ async fn google_callback(token: TokenResponse<Google>, cookies: &CookieJar<'_>) 
     Redirect::to("/events")
 }
 
+#[get("/robots.txt")]
+async fn robots() -> Option<NamedFile> {
+    NamedFile::open("static/robots.txt").await.ok()
+}
+
+#[get("/sitemap.xml")]
+async fn sitemap() -> Option<NamedFile> {
+    NamedFile::open("static/sitemap.xml").await.ok()
+}
+
+#[get("/security.txt")]
+async fn security() -> Option<NamedFile> {
+    NamedFile::open("static/.well-known/security.txt").await.ok()
+}
+
+#[get("/pgp-key.txt")]
+async fn pgp_key() -> Option<NamedFile> {
+    NamedFile::open("static/.well-known/pgp-key.txt").await.ok()
+}
+
 #[rocket::main]
 async fn main() {
-    let mut allowedEmails: Vec<String> = vec!["admin@austinh.dev".to_string(), "ahadley1124@gmail.com".to_string(), "kd8otq@gmail.com".to_string()];
+    let allowedEmails: Vec<String> = vec!["admin@austinh.dev".to_string(), "ahadley1124@gmail.com".to_string(), "kd8otq@gmail.com".to_string()];
 
     let _ = rocket::build()
-        .mount("/", routes![index, favicon, events])
+        .mount("/", routes![index, favicon, events, robots, sitemap, pgp_key])
         .mount("/css/", routes![styles, events_css, auth_css])
         .mount("/js/", routes![main_js, navbar_js, auth_js])
         .mount("/images", routes![covered_bridge])
+        .mount("/.well-known", routes![security, pgp_key])
         .mount(
             "/auth",
             routes![
