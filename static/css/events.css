@@ -1,3 +1,15 @@
 .calendar {
     border: solid 1px #777;
+    /* Center the calendar on the screen */
+    position: flex;
+    /* Make the calendar have a white background */
+    background-color: #fff;
+    /* Make the calendar have a little bit of transparency */
+    opacity: 0.9;
+    /* Make the calendar have a little bit of padding */
+    padding: 10px;
+    /* Make the calendar have a little bit of margin */
+    margin: 10px;
+    /* Make the calendar have a little bit of border radius */
+    border-radius: 10px;
 }

@@ -69,7 +69,6 @@ p {
 
 .container {
   /* Remove the left 65% of the space from being used */
-  margin-left: 70%;
   /*padding-top: 88px;*/
 }
 
@@ -78,9 +77,13 @@ p {
   display: flex;
   padding: 10px 20px;
   height: 88px;
+  width: 544px;
   /* align the last item to the right side, 20px from the side and then the other button's will align themselves */
   justify-content: space-between;
   align-items: right;
+  /* align the navbar to the right side */
+  margin-left: auto;
+  margin-right: 0;
 }
 
 .nav-button {
