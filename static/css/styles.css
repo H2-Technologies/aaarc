@@ -7,7 +7,7 @@ h1 {
 .image-container {
   height: 500px;
   vertical-align: bottom;
-  background-image: url('/images/coveredBridge.jpg');
+  background-image: url("/images/coveredBridge.jpg");
   background-repeat: no-repeat;
   background-position: 50% 50%;
   background-size: 100%;
@@ -54,6 +54,7 @@ h1 {
 /* Make the background of the whole page black */
 body {
   background-color: #000;
+  color: #fff;
 }
 
 /* Make the text white */

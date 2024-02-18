@@ -126,13 +126,23 @@ async fn pgp_key() -> Option<NamedFile> {
     NamedFile::open("static/.well-known/pgp-key.txt").await.ok()
 }
 
+#[get("/repeaters")]
+async fn repeaters() -> Option<NamedFile> {
+    NamedFile::open("static/repeaters.html").await.ok()
+}
+
+#[get("/repeaters.css")]
+async fn repeaters_css() -> Option<NamedFile> {
+    NamedFile::open("static/css/repeaters.css").await.ok()
+}
+
 #[rocket::main]
 async fn main() {
     let allowedEmails: Vec<String> = vec!["admin@austinh.dev".to_string(), "ahadley1124@gmail.com".to_string(), "kd8otq@gmail.com".to_string()];
 
     let _ = rocket::build()
-        .mount("/", routes![index, favicon, events, robots, sitemap, pgp_key])
-        .mount("/css/", routes![styles, events_css, auth_css])
+        .mount("/", routes![index, favicon, events, robots, sitemap, pgp_key, repeaters])
+        .mount("/css/", routes![styles, events_css, auth_css, repeaters_css])
         .mount("/js/", routes![main_js, navbar_js, auth_js])
         .mount("/images", routes![covered_bridge])
         .mount("/.well-known", routes![security, pgp_key])
