@@ -118,7 +118,9 @@ async fn sitemap() -> Option<NamedFile> {
 
 #[get("/security.txt")]
 async fn security() -> Option<NamedFile> {
-    NamedFile::open("static/.well-known/security.txt").await.ok()
+    NamedFile::open("static/.well-known/security.txt")
+        .await
+        .ok()
 }
 
 #[get("/pgp-key.txt")]
@@ -136,25 +138,41 @@ async fn repeaters_css() -> Option<NamedFile> {
     NamedFile::open("static/css/repeaters.css").await.ok()
 }
 
+#[get("/contact")]
+async fn contact() -> Option<NamedFile> {
+    NamedFile::open("static/contact.html").await.ok()
+}
+
+#[get("/resources")]
+async fn resources() -> Option<NamedFile> {
+    NamedFile::open("static/resources.html").await.ok()
+}
+
 #[rocket::main]
 async fn main() {
-    let allowedEmails: Vec<String> = vec!["admin@austinh.dev".to_string(), "ahadley1124@gmail.com".to_string(), "kd8otq@gmail.com".to_string()];
+    let allowedEmails: Vec<String> = vec![
+        "admin@austinh.dev".to_string(),
+        "ahadley1124@gmail.com".to_string(),
+        "kd8otq@gmail.com".to_string(),
+    ];
 
     let _ = rocket::build()
-        .mount("/", routes![index, favicon, events, robots, sitemap, pgp_key, repeaters])
-        .mount("/css/", routes![styles, events_css, auth_css, repeaters_css])
+        .mount(
+            "/",
+            routes![
+                index, favicon, events, robots, sitemap, pgp_key, repeaters, contact, resources
+            ],
+        )
+        .mount(
+            "/css/",
+            routes![styles, events_css, auth_css, repeaters_css],
+        )
         .mount("/js/", routes![main_js, navbar_js, auth_js])
         .mount("/images", routes![covered_bridge])
         .mount("/.well-known", routes![security, pgp_key])
         .mount(
             "/auth",
-            routes![
-                auth_main,
-                github,
-                google,
-                github_callback,
-                google_callback
-            ],
+            routes![auth_main, github, google, github_callback, google_callback],
         )
         .attach(OAuth2::<GitHub>::fairing("github"))
         .attach(OAuth2::<Google>::fairing("google"))
@@ -167,7 +185,10 @@ async fn get_email(token: &str) -> Result<String, Status> {
     let response = client
         .get("https://api.github.com/user/emails")
         .header("Authorization", format!("Bearer {}", token))
-        .header("User-Agent", "Ashland-Area-Amateur-Radio-Club<admin@austinh.dev>")
+        .header(
+            "User-Agent",
+            "Ashland-Area-Amateur-Radio-Club<admin@austinh.dev>",
+        )
         .send()
         .await;
     match response {

@@ -68,11 +68,6 @@ p {
   text-align: center;
 }
 
-.container {
-  /* Remove the left 65% of the space from being used */
-  /*padding-top: 88px;*/
-}
-
 .navbar {
   /* Make the navbar a flexbox, and make the items in the navbar have a space between them */
   display: flex;

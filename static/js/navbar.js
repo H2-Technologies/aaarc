@@ -16,4 +16,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // redirect to the resources page
         window.location.href = '/resources';
     });
+    document.getElementById('contact').addEventListener('click', function() {
+        // redirect to the about page
+        window.location.href = '/contact';
+    });
 });
