@@ -148,6 +148,11 @@ async fn resources() -> Option<NamedFile> {
     NamedFile::open("static/resources.html").await.ok()
 }
 
+#[get("/ads.txt")]
+async fn ads() -> Option<NamedFile> {
+    NamedFile::open("static/ads.txt").await.ok()
+}
+
 #[rocket::main]
 async fn main() {
     let allowedEmails: Vec<String> = vec![
@@ -160,7 +165,8 @@ async fn main() {
         .mount(
             "/",
             routes![
-                index, favicon, events, robots, sitemap, pgp_key, repeaters, contact, resources
+                index, favicon, events, robots, sitemap, pgp_key, repeaters, contact, resources,
+                ads
             ],
         )
         .mount(
