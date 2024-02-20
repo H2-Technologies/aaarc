@@ -3,7 +3,7 @@
 # Comments are provided throughout this file to help you get started.
 # If you need more help, visit the Dockerfile reference guide at
 # https://docs.docker.com/engine/reference/builder/
-FROM rust:1.74.1-slim
+FROM rust:1.76-slim
 
 WORKDIR /usr/src/app
 

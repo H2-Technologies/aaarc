@@ -32,19 +32,6 @@ jobs:
       - name: Build
         run: cargo build --release
 
-  upload:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Upload Release
-        uses: actions/upload-release@v1
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: target/release/ashland-area-amateur-radio-club
-          asset_name: aaarc
-          tag: ${{ github.ref }}
-          release_title: ${{ github.ref }}
-
   build_docker_image:
     runs-on: ubuntu-latest
     steps:

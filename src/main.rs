@@ -2,9 +2,12 @@
 extern crate rocket;
 use rocket::http::Status;
 use rocket::http::{Cookie, SameSite};
+use rocket::response::content::RawJson;
+use rocket::response::Responder;
 use rocket::{fs::NamedFile, http::CookieJar, response::Redirect};
 use rocket_oauth2::{OAuth2, TokenResponse};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use serde_json; // Import the serde_json crate
 
 #[derive(Deserialize)]
 struct EmailResponse {
@@ -153,20 +156,64 @@ async fn ads() -> Option<NamedFile> {
     NamedFile::open("static/ads.txt").await.ok()
 }
 
+#[get("/privacy-policy")]
+async fn privacy_policy() -> Option<NamedFile> {
+    NamedFile::open("static/privacy-policy.html").await.ok()
+}
+
+#[get("/logout")]
+fn logout(cookies: &CookieJar<'_>) -> Redirect {
+    cookies.remove_private(Cookie::from("token"));
+    Redirect::to("/")
+}
+
+#[get("/")]
+async fn ping() -> String {
+    "pong".to_string()
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct FileInfo {
+    name: String,
+    size: u64,
+    modified: String,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct FileList {
+    files: Vec<FileInfo>,
+}
+
+#[get("/files/list")]
+async fn list_files() -> RawJson<String> {
+    let mut files = Vec::new();
+    let dir = std::fs::read_dir("static/content").unwrap();
+    for entry in dir {
+        let entry = entry.unwrap();
+        let metadata = entry.metadata().unwrap();
+        let modified = metadata.modified().unwrap();
+        let modified = modified.duration_since(std::time::UNIX_EPOCH).unwrap();
+        let modified = modified.as_secs();
+        files.push(FileInfo {
+            name: entry.file_name().into_string().unwrap(),
+            size: metadata.len(),
+            modified: modified.to_string(),
+        });
+    }
+    let file_list = FileList { files };
+    let json = serde_json::to_string(&file_list).unwrap();
+    println!("JSON: {:?}", json);
+    RawJson(json)
+}
+
 #[rocket::main]
 async fn main() {
-    let allowedEmails: Vec<String> = vec![
-        "admin@austinh.dev".to_string(),
-        "ahadley1124@gmail.com".to_string(),
-        "kd8otq@gmail.com".to_string(),
-    ];
-
     let _ = rocket::build()
         .mount(
             "/",
             routes![
                 index, favicon, events, robots, sitemap, pgp_key, repeaters, contact, resources,
-                ads
+                ads, privacy_policy, logout
             ],
         )
         .mount(
@@ -174,12 +221,13 @@ async fn main() {
             routes![styles, events_css, auth_css, repeaters_css],
         )
         .mount("/js/", routes![main_js, navbar_js, auth_js])
-        .mount("/images", routes![covered_bridge])
-        .mount("/.well-known", routes![security, pgp_key])
+        .mount("/images/", routes![covered_bridge])
+        .mount("/.well-known/", routes![security, pgp_key])
         .mount(
-            "/auth",
+            "/auth/",
             routes![auth_main, github, google, github_callback, google_callback],
         )
+        .mount("/api/", routes![ping, list_files])
         .attach(OAuth2::<GitHub>::fairing("github"))
         .attach(OAuth2::<Google>::fairing("google"))
         .launch()
