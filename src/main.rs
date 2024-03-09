@@ -4,10 +4,13 @@ use rocket::http::Status;
 use rocket::http::{Cookie, SameSite};
 use rocket::response::content::RawJson;
 use rocket::response::Responder;
+use rocket::Request;
 use rocket::{fs::NamedFile, http::CookieJar, response::Redirect};
 use rocket_oauth2::{OAuth2, TokenResponse};
 use serde::{Deserialize, Serialize};
-use serde_json; // Import the serde_json crate
+use serde_json;
+use std::fs::read_dir;
+use std::io::Write; // Import the serde_json crate
 
 #[derive(Deserialize)]
 struct EmailResponse {
@@ -49,6 +52,11 @@ async fn covered_bridge() -> Option<NamedFile> {
 #[get("/navbar.js")]
 async fn navbar_js() -> Option<NamedFile> {
     NamedFile::open("static/js/navbar.js").await.ok()
+}
+
+#[get("/resources.js")]
+async fn resources_js() -> Option<NamedFile> {
+    NamedFile::open("static/js/resources.js").await.ok()
 }
 
 #[get("/events")]
@@ -186,41 +194,66 @@ struct FileList {
 
 #[get("/files/list")]
 async fn list_files() -> RawJson<String> {
-    let mut files = Vec::new();
-    let dir = std::fs::read_dir("static/content").unwrap();
+    let mut files: Vec<FileInfo> = Vec::new();
+    let dir = read_dir("./static/content/").unwrap();
     for entry in dir {
         let entry = entry.unwrap();
         let metadata = entry.metadata().unwrap();
         let modified = metadata.modified().unwrap();
-        let modified = modified.duration_since(std::time::UNIX_EPOCH).unwrap();
-        let modified = modified.as_secs();
+        let modified = modified
+            .duration_since(std::time::SystemTime::UNIX_EPOCH)
+            .unwrap();
+        let modified = chrono::NaiveDateTime::from_timestamp(modified.as_secs() as i64, 0);
+        let modified = modified.format("%Y-%m-%d %H:%M:%S").to_string();
         files.push(FileInfo {
-            name: entry.file_name().into_string().unwrap(),
+            name: entry.file_name().to_string_lossy().to_string(),
             size: metadata.len(),
-            modified: modified.to_string(),
+            modified: modified,
         });
     }
-    let file_list = FileList { files };
-    let json = serde_json::to_string(&file_list).unwrap();
+    //let file_list = FileList { files: files };
+    let json = serde_json::to_string(&files).unwrap();
     println!("JSON: {:?}", json);
     RawJson(json)
 }
 
+#[catch(default)]
+async fn errer(status: Status, request: &Request<'_>) -> &'static str {
+    println!("Error: {:?}", status);
+    log_file_rotate(request);
+    "An error occurred"
+}
+
 #[rocket::main]
 async fn main() {
+    let allowed_emails: Vec<&str> = vec![
+        "ahadley1124@gmail.com",
+        "admin@austinh.dev",
+        "kd8otq@gmail.com",
+    ];
     let _ = rocket::build()
         .mount(
             "/",
             routes![
-                index, favicon, events, robots, sitemap, pgp_key, repeaters, contact, resources,
-                ads, privacy_policy, logout
+                index,
+                favicon,
+                events,
+                robots,
+                sitemap,
+                pgp_key,
+                repeaters,
+                contact,
+                resources,
+                ads,
+                privacy_policy,
+                logout
             ],
         )
         .mount(
             "/css/",
             routes![styles, events_css, auth_css, repeaters_css],
         )
-        .mount("/js/", routes![main_js, navbar_js, auth_js])
+        .mount("/js/", routes![main_js, navbar_js, auth_js, resources_js])
         .mount("/images/", routes![covered_bridge])
         .mount("/.well-known/", routes![security, pgp_key])
         .mount(
@@ -230,6 +263,7 @@ async fn main() {
         .mount("/api/", routes![ping, list_files])
         .attach(OAuth2::<GitHub>::fairing("github"))
         .attach(OAuth2::<Google>::fairing("google"))
+        .manage(allowed_emails)
         .launch()
         .await;
 }
@@ -263,4 +297,32 @@ async fn get_email(token: &str) -> Result<String, Status> {
         }
         Err(_) => return Err(Status::InternalServerError),
     }
+}
+
+fn log_file_rotate(req: &rocket::Request) {
+    //get the size of the file
+    let file = std::fs::File::open("/var/log/rocket.log").unwrap();
+    let metadata = file.metadata().unwrap();
+    let size = metadata.len();
+    //if the file is larger than 10MB, rotate it
+    if size > 10_000_000 {
+        let new_name = format!(
+            "/var/log/rocket.log.{}",
+            chrono::Local::now().format("%Y-%m-%d")
+        );
+        std::fs::rename("/var/log/rocket.log", new_name).unwrap();
+    }
+    // format a string with the date, method, uri, and status code
+    let log = format!(
+        "{} - {} {}\n",
+        chrono::Local::now().format("%Y-%m-%d %H:%M:%S"),
+        req.method(),
+        req.uri(),
+    );
+    // open the file in append mode and write the log
+    let mut file = std::fs::OpenOptions::new()
+        .append(true)
+        .open("/var/log/rocket.log")
+        .unwrap();
+    file.write_all(log.as_bytes()).unwrap();
 }
