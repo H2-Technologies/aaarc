@@ -14,7 +14,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Copy Static Files
-        run: cp -r static/ /var/www/aaarc/static/
+        run: cp -r static/ /var/www/aaarc/
       - name: Build
         run: cargo build --release
       - name: Copy Binary
