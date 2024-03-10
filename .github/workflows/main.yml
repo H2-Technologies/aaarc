@@ -4,45 +4,20 @@ on:
   push:
     branches:
       - "main"
-  workflow_dispatch:
 
 jobs:
-  install_rust:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Install Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
-      - name: Update Repositories
-        run: sudo apt-get update
-      - name: Install Cargo
-        run: sudo apt-get install cargo
-
   build:
     strategy:
       fail-fast: false
-      matrix:
-        platform: [macos-latest, ubuntu-22.04, windows-latest]
-    runs-on: ${{ matrix.platform }}
+    runs-on: Austin-Server
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Copy Static Files
+        run: cp -r static/ /var/www/aaarc/static/
       - name: Build
         run: cargo build --release
-
-  build_docker_image:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Setup
-        uses: actions/checkout@v4
-      - name: Build Image
-        run: |
-          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/aaarc .
-      - name: Login to Docker Hub
-        run: |
-          docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_TOKEN }}
-      - name: Push Image
-        run: |
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/aaarc
+      - name: Copy Binary
+        run: cp target/release/aaarc /var/www/aaarc/aaarc
+      - name: Restart Server
+        run: systemctl restart aaarc
